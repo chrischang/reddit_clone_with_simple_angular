@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='reddit'>
+<head>
+  <meta charset="UTF-8">
+  <title>Reddit Clone with AngluarJS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-messages.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.0.0-beta.6/angular-moment.min.js"></script>
+  <script src="app.js"></script>
+</head>
+<body ng-controller="MainController">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Reddit Clone</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li ng-click="method.createPost()"><a href="#"><i class="fa fa-plus" aria-hidden="true"></i> Submit Post</a></li>
+        </ul>
+        <form class="navbar-form navbar-left form-group" role="search"> 
+          <div class="form-group">
+            <input type="text" class="form-control" ng-model="search" placeholder="Search">
+          </div>
+          <select name="filter" class="btn btn-default form-control" ng-model="filter" ng-init="filter='votes'">
+            <option value="votes">Sort By Votes</option>
+            <option value="date">Sort By Date</option>
+            <option value="title">Sort By Title</option>
+          </select>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div class="container" id="submitForm" ng-show="state.createNewPost">
+    <form class="form-horizontal" novalidate ng-submit="method.onSubmit(newPost)" name="newPost">
+      <div class="form-group" ng-class="{'has-success': newPost.title.$valid, 'has-error': newPost.title.$invalid && newPost.title.$touched}">
+        <label for="">Title: </label>
+        <input type="text" name="title" class="form-control" ng-model="data.title" ng-class="{'positiveVotes': newPost.title.$valid, 'negativeVotes': newPost.title.$invalid}" required>
+        <div ng-messages="newPost.title.$error" ng-show="newPost.title.$touched">
+            <div ng-messages-include="messages.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{'has-success': newPost.author.$valid, 'has-error': newPost.author.$invalid && newPost.author.$touched}">
+        <label for="">Author: </label>
+        <input type="text" name="author" class="form-control" ng-model="data.author" ng-class="{'positiveVotes': newPost.author.$valid, 'negativeVotes': newPost.author.$invalid}" required>
+        <div ng-messages="newPost.author.$error" ng-show="newPost.author.$touched">
+            <div ng-messages-include="messages.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{'has-success': newPost.image.$valid, 'has-error': newPost.image.$invalid && newPost.image.$touched}">
+        <label for="">ImageUrl: </label>
+        <input type="url" name="image" class="form-control" ng-model="data.image" ng-class="{'positiveVotes': newPost.image.$valid, 'negativeVotes': newPost.image.$invalid}" required>
+        <div ng-messages="newPost.image.$error" ng-show="newPost.image.$touched">
+            <div ng-messages-include="messages.html"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{'has-success': newPost.description.$valid, 'has-error': newPost.description.$invalid && newPost.description.$touched}">
+        <label for="">Description: </label>
+        <input type="text" name="description" class="form-control" ng-model="data.description" ng-maxlength=500 required>
+        <div ng-messages="newPost.description.$error" ng-show="newPost.description.$touched">
+            <div ng-messages-include="messages.html"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="submit" ng-disabled="newPost.$invalid" class="btn btn-default">
+      </div>
+    </form>
+  </div>
+  <div class="container">
+    <div class="jumbotron">
+      <div ng-repeat="post in posts | orderBy: filter : filter === 'title' ? false : true | filter: search track by post.id">
+        <div class="row">
+          <div class="col-md-4.5">
+            <div class="imageContainer">
+              <a href="#">
+                <img class="image" ng-src={{post.image}}>
+              </a>
+            </div>
+          </div>
+          <div class="col-md-7.5">
+            <h4>
+              {{post.title}} | 
+              <i class="fa fa-arrow-up" aria-hidden="true" ng-click="method.upVote(post.id)"></i>
+              <i class="fa fa-arrow-down" aria-hidden="true" ng-click="method.downVote(post.id)"></i>
+              <span ng-model="post.vote" ng-class="{'positiveVotes': post.votes > 0, 'negativeVotes': post.votes < 0}">{{post.votes}}</span>
+              <small class="author">By {{post.author}}</small>
+            </h4>
+            <div>
+              {{post.description}}
+            </div>
+              <div class="bot">
+                <div class="inline"><i class="fa fa-calendar" aria-hidden="true"> <span>{{post.date | amCalendar}}</span></i> | </div>
+                <div class="inline" ng-click="method.showComment(post.id)"><i class="fa fa-comments" aria-hidden="true"> 
+                <ng-pluralize 
+                  count="post.comments.length"
+                  when="{
+                          '1': '{{post.comments.length}} comment',
+                          'other': '{{post.comments.length}} comments'
+                        }">
+                <ng-pluralize></i> | </div>
+                <div class="inline" ng-click="method.newComment(post.id)"><i class="fa fa-pencil" aria-hidden="true"> Add Comment </i></div>
+              </div>
+              <div class="commentContainer">
+                <div class="showComment" ng-repeat="comment in post.comments" ng-show="post.showComment">
+                  <li><strong>{{comment.author}}</strong> says: {{comment.text}} <span class="commentDate">{{comment.date | amCalendar}}</span></li>
+                </div>
+              </div>
+              <!-- comment new form starts here -->
+              <div class="commentForm" ng-show="post.newComment">
+                <form name="newComment" class="form-inline" ng-submit=method.addComment(post.id)>
+                  <label class="label-control">Author: </label>
+                  <input type="text" class="form-control" name="author" ng-model="post.comment.author" required>
+                  <label>Text: </label>
+                  <input type="text" class="form-control" name="text" ng-model="post.comment.text" required>
+                  <input type="submit" class="btn btn-default" value="Add Comment">
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+.imageContainer {
+  width: 25vw;
+  height: 25vh;
+  display: inline-block;
+  float: left;
+  position: relative;
+  margin-left: 10px;
+  margin-top: 17px;
+}
+
+.positiveVotes {
+  color: green;
+}
+
+.negativeVotes {
+  color: red;
+}
+
+.image {
+  width: 90%;
+  height: 90%;
+  border: 10;
+}
+
+.title {
+  position: relative;
+  margin-left: 16vw;
+  padding: 10px;
+}
+
+.bot {
+  display: inline-block;
+}
+
+.author {
+  float: right;
+}
+
+.ng-enter{
+    transition: 0.5s ease all;
+    opacity: 0;
+}
+.ng-enter.ng-enter-active{
+    opacity: 1;
+}
+
+.ng-leave{
+    transition: 0.5s ease all;
+    opacity: 1;
+}
+
+.ng-leave.ng-leave-active{
+    opacity: 0;
+}
+
+#submitForm {
+  padding: 20px;
+}
+
+.insertComment {
+  padding: 10px;
+}
+
+.inline {
+  display: inline;
+}
+
+.showComment {
+  font-size: 12px;
+  display: block;
+  padding: 2px;
+}
+
+.commentContainer {
+  margin-top: 5vh;
+  margin-left: 1vw;
+}
+
+.commentDate {
+  float: right;
+}
+
+.commentForm {
+  margin-left: 30%;
+  margin-right: 15%;
+}
