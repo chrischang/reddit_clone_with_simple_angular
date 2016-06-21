@@ -48,7 +48,7 @@
       </div>
     </div>
   </nav>
-  <div class="container" id="submitForm" ng-show="state.createNewPost">
+  <div class="container-fluid" id="submitForm" ng-show="state.createNewPost">
     <form class="form-horizontal" novalidate ng-submit="method.onSubmit(newPost)" name="newPost">
       <div class="form-group" ng-class="{'has-success': newPost.title.$valid, 'has-error': newPost.title.$invalid && newPost.title.$touched}">
         <label for="">Title: </label>
@@ -83,7 +83,7 @@
       </div>
     </form>
   </div>
-  <div class="container">
+  <div class="container-fluid">
     <div class="jumbotron">
       <div ng-repeat="post in posts | orderBy: filter : filter === 'title' ? false : true | filter: search track by post.id">
         <div class="row">
